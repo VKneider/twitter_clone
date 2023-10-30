@@ -37,7 +37,7 @@ export default class TweetController {
 
     }
 
-    static updateTweet = async (req: Request, res: Response) => {
+    static updateTweetData = async (req: Request, res: Response) => {
 
     }
 

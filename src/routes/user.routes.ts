@@ -5,10 +5,16 @@ import validationYup from '../middlewares/validationYup.js';
 import passport from 'passport';
 let userRouter = Router();
 
+import attachUserId from '../middlewares/attachUserId.js';
+import validateUserIdToken from '../middlewares/validateUserId.js';
+
 userRouter.use(passport.authenticate("jwt", { session: false }));
+userRouter.use(attachUserId);
+userRouter.use(validateUserIdToken);
+
 
 userRouter.get(
-    "/",
+    "/:userId",
     validationYup(schemas.idSchema),
     UserController.getUserData
 );
@@ -20,7 +26,7 @@ userRouter.put(
 );
 
 userRouter.delete(
-    "/",
+    "/:userId",
     validationYup(schemas.idSchema),
     UserController.deleteUser
 );

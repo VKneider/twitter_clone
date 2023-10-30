@@ -1,51 +1,44 @@
-import UserCollection, {IUser} from "../models/user.js";
-import {Request,Response} from "express";
+import UserCollection, { IUser } from "../models/user.js";
+import { Request, Response } from "express";
+import ApiResponse from "../utils/ApiResponse.js";
 
+export default class authController {
+    static login = async (req: Request, res: Response) => {
+        const { email, password } = req.body;
 
-export default class authController{
+        const user = await UserCollection.findOne({ email });
 
-    static login = async (req:Request,res:Response)=>{
-        const {email,password} = req.body;
-
-        const user = await UserCollection.findOne({email});
-        
-        if(!user){
-            return res.status(400).json({message:"User does not exist"});
+        if (!user) {
+            return ApiResponse.error(res, "User does not exist");
         }
 
-        //Compare password
         const validPassword = await user.comparePassword(password);
 
-        if(!validPassword){
-            return res.status(400).json({message:"Invalid password"});
+        if (!validPassword) {
+            return ApiResponse.error(res, "Invalid password");
         }
-
-        //Create token
 
         const token = await user.createToken(user);
 
-        res.json({message:"User logged in", token:token});
+        return ApiResponse.success(res, "User logged in", { token });
+    };
 
-    }
+    static register = async (req: Request, res: Response) => {
+        const { email, username, password } = req.body;
 
-    static register = async (req:Request,res:Response)=>{
+        const userExists = await UserCollection.findOne({ email });
 
-        const {email,username,password} = req.body;
-
-        const userExists = await UserCollection.findOne({email});
-        
-        if(userExists){
-            return res.status(400).json({message:"User with email already exists"});
+        if (userExists) {
+            return ApiResponse.error(res, "User with email already exists");
         }
 
         const user = new UserCollection({
             email,
             username,
-            password
+            password,
         });
 
         await user.save();
-        res.json({message:`User ${user.username} created`});
-    }
-    
-} 
+        return ApiResponse.success(res, `User ${user.username} created`, null);
+    };
+}

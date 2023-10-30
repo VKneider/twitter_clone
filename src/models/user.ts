@@ -4,8 +4,7 @@ import jwt from "jsonwebtoken";
 import "dotenv/config"
 
 export interface IUser extends Document {
-  names: string;
-  lastNames: string;
+  fullName: string;
   email: string;
   password: string;
   username: string;
@@ -13,23 +12,18 @@ export interface IUser extends Document {
   createdAt: Date;
   comparePassword: (password: string) => Promise<boolean>;
   updateData: (userData: {
-    names?: string;
-    lastNames?: string;
+    fullName?: string;
     email?: string;
     username?: string;
     oldPassword?: string;
     newPassword?: string;
     isDisabled?: boolean;
   }) => Promise<boolean>;
-  createToken: () => Promise<string>;
+  createToken: (user) => Promise<string>;
 }
 
 const userSchema = new Schema<IUser>({
-  names: {
-    type: String,
-    required: true,
-  },
-  lastNames: {
+  fullName: {
     type: String,
     required: true,
   },
@@ -85,8 +79,7 @@ userSchema.methods.comparePassword = async function(
 
 userSchema.methods.updateData = async function (
   userData: {
-    names?: string;
-    lastNames?: string;
+    fullName?: string;
     email?: string;
     username?: string;
     oldPassword?: string;
@@ -101,8 +94,7 @@ userSchema.methods.updateData = async function (
     user.password = userData.newPassword;
   }
 
-  if (userData.names) user.names = userData.names;
-  if (userData.lastNames) user.lastNames = userData.lastNames;
+  if (userData.fullName) {user.fullName = userData.fullName;}
   if (userData.email) {
     user.email = userData.email;
   }

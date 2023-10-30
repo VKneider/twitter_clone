@@ -4,14 +4,22 @@ import "dotenv/config";
 export interface ITweet extends Document {
   content: string;
   idUser: string;
-  isReply: string | boolean | null;
-  attachmentUrl: string;
-  createdAt: Date;
-  isDeleted: boolean;
-  isEdited: boolean;
+  attachmentUrls: string[];
   mentions: string[];
   hashtags: string[];
-  likeIds: string[];
+  isDeleted: boolean;
+  isEdited: boolean;
+  isReply: string | boolean | null;
+  createdAt: Date;
+  updateData: (tweetData: {
+    content?: string;
+    attachmentUrls?: string[];
+    mentions?: string[];
+    hashtags?: string[];
+    isDeleted?: boolean;
+    isEdited?: boolean;
+    isReply?: string | boolean | null;
+  }) => Promise<boolean>;
 }
 
 const tweetSchema: Schema<ITweet> = new Schema<ITweet>({
@@ -28,9 +36,9 @@ const tweetSchema: Schema<ITweet> = new Schema<ITweet>({
     type: Schema.Types.Mixed,
     default: null,
   },
-  attachmentUrl: {
-    type: String,
-    default:''
+  attachmentUrls: {
+    type: [String],
+    default:[]
   },
   createdAt: {
     type: Date,
@@ -53,12 +61,33 @@ const tweetSchema: Schema<ITweet> = new Schema<ITweet>({
   hashtags: {
     type: [String],
     default: [],
-  },
-  likeIds:{
-    type: [String],
-    default:[]
   }
 });
+
+tweetSchema.methods.updateData = async function (
+  tweetData: {
+    content?: string;
+    attachmentUrls?: string[];
+    mentions?: string[];
+    hashtags?: string[];
+    isDeleted?: boolean;
+    isEdited?: boolean;
+    isReply?: string | boolean | null;
+  }
+): Promise<boolean> {
+  const tweet = this;
+
+  if (tweetData.content) tweet.content = tweetData.content;
+  if (tweetData.attachmentUrls) tweet.attachmentUrls = tweetData.attachmentUrls;
+  if (tweetData.mentions) tweet.mentions = tweetData.mentions;
+  if (tweetData.hashtags) tweet.hashtags = tweetData.hashtags;
+  if (tweetData.isDeleted !== undefined) tweet.isDeleted = tweetData.isDeleted;
+  if (tweetData.isEdited !== undefined) tweet.isEdited = tweetData.isEdited;
+  if (tweetData.isReply !== undefined) tweet.isReply = tweetData.isReply;
+
+  await tweet.save();
+  return true;
+};
 
 const TweetModel = model<ITweet>("Tweet", tweetSchema);
 

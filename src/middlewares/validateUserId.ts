@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import ApiResponse from "../utils/ApiResponse";
+import ApiResponse from "../utils/ApiResponse.js";
 
 
 function areValuesEqual(value1: string, value2: string): boolean {

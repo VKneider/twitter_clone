@@ -1,25 +1,6 @@
 import yup from 'yup';
 
-const loginSchema = yup.object().shape({
-  email: yup.string().email().required("Email is required"),
-  password: yup.string().required("Password is required"),
-});
-
-const registerSchema = yup.object().shape({
-    email: yup.string().email().required("Email is required"),
-    password: yup.string().required("Password is required"),
-    username: yup.string().required("Username is required"),
-});
-
-const updateUserDataSchema = yup.object().shape({
-    newPassword: yup.string(),
-    username: yup.string(),
-    email: yup.string().email(),
-    oldPassword: yup.string(),
-    userId: yup.string().required("User id is required"),
-});
-
-function sch (schema){
+function sch (schema:any){
     return yup.object().shape(schema);
 }
 
@@ -27,7 +8,7 @@ function sch (schema){
 
 const schemas = {
     loginSchema : sch({
-        email: yup.string().email().required("Email is required"),
+        identifier: yup.string().required("Email is required"),
         password: yup.string().required("Password is required"),
     }),
 
@@ -45,6 +26,7 @@ const schemas = {
         email: yup.string().email(),
         isDisabled: yup.boolean(),
         userId: yup.string().required("User id is required"),
+        isVerified: yup.boolean(),
     }),
 
     createTweetSchema : sch({
@@ -62,6 +44,12 @@ const schemas = {
         tweetId: yup.string().required("Post id is required"),
     }),
 
+    followSchema : sch({
+        userId: yup.string().required("User id is required"),
+        idFollowing: yup.string().required("Following user id is required"),
+    }),
+
+    
 
 
 }

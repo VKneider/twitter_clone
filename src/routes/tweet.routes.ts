@@ -22,4 +22,8 @@ tweetRouter.get("/:tweetId",TweetController.getTweetById);
 
 tweetRouter.delete("/:tweetId",TweetController.updateTweetData);
 
+tweetRouter.get("/getAllTweets",TweetController.getAllTweets);
+
+tweetRouter.get("/getAllTweets",TweetController.getAllTweets);
+
 export default tweetRouter;

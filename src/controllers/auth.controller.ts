@@ -4,38 +4,54 @@ import ApiResponse from "../utils/ApiResponse.js";
 
 export default class authController {
     static login = async (req: Request, res: Response) => {
-        const { email, password } = req.body;
+        const { identifier, password } = req.body;
 
-        const user = await UserCollection.findOne({ email });
+        // Verifica si el identificador es un correo electrónico o un nombre de usuario
+        const isEmail = identifier.includes('@');
+
+        // Busca el usuario por correo electrónico o nombre de usuario
+        const user = isEmail
+            ? await UserCollection.findOne({ email: identifier })
+            : await UserCollection.findOne({ username: identifier });
 
         if (!user) {
             return ApiResponse.error(res, "User does not exist");
         }
 
+        // Verifica la contraseña
         const validPassword = await user.comparePassword(password);
 
         if (!validPassword) {
             return ApiResponse.error(res, "Invalid password");
         }
 
+        // Genera el token de autenticación
         const token = await user.createToken(user);
 
         return ApiResponse.success(res, "User logged in", { token });
     };
 
     static register = async (req: Request, res: Response) => {
-        const { email, username, password } = req.body;
+        const { email, username, password, fullName } = req.body;
 
-        const userExists = await UserCollection.findOne({ email });
+        // Verifica si ya existe un usuario con el mismo correo electrónico o nombre de usuario
+        const emailExists = await UserCollection.findOne({ email });
+        const usernameExists = await UserCollection.findOne({ username });
 
-        if (userExists) {
+        if (emailExists) {
             return ApiResponse.error(res, "User with email already exists");
         }
 
+        if (usernameExists) {
+            return ApiResponse.error(res, "User with username already exists");
+        }
+
+        // Crea un nuevo usuario si no hay coincidencias con el correo electrónico o nombre de usuario
         const user = new UserCollection({
             email,
             username,
             password,
+            fullName
         });
 
         await user.save();

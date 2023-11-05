@@ -7,6 +7,9 @@ import passportMiddleware from './middlewares/passport.js';
 
 import userRouter from './routes/user.routes.js';
 import authRouter from './routes/auth.routes.js';
+import likeRouter from './routes/like.routes.js';
+import tweetRouter from './routes/tweet.routes.js';
+
 
 const app = express();
 
@@ -21,6 +24,9 @@ passport.use(passportMiddleware)
 
 app.use('/auth', authRouter)
 app.use('/user', userRouter)
+app.use('/tweet', tweetRouter)
+app.use('/like', likeRouter)
+
 
 
 export default app;

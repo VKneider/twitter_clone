@@ -10,6 +10,7 @@ export interface IUser extends Document {
   username: string;
   isDisabled: boolean;
   createdAt: Date;
+  isVerified: boolean;
   comparePassword: (password: string) => Promise<boolean>;
   updateData: (userData: {
     fullName?: string;
@@ -18,8 +19,9 @@ export interface IUser extends Document {
     oldPassword?: string;
     newPassword?: string;
     isDisabled?: boolean;
+    isVerified?: boolean;
   }) => Promise<boolean>;
-  createToken: (user) => Promise<string>;
+  createToken: (user:any) => Promise<string>;
 }
 
 const userSchema = new Schema<IUser>({
@@ -53,6 +55,11 @@ const userSchema = new Schema<IUser>({
     required: true,
     default: Date.now,
   },
+  isVerified: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
 });
 
 
@@ -85,6 +92,7 @@ userSchema.methods.updateData = async function (
     oldPassword?: string;
     newPassword?: string;
     isDisabled?: boolean;
+    isVerified?: boolean;
   }
 ): Promise<boolean> {
   const user = this;
@@ -99,8 +107,9 @@ userSchema.methods.updateData = async function (
     user.email = userData.email;
   }
   if (userData.username) user.username = userData.username;
-  if (userData.isDisabled !== undefined) user.isDisabled = userData.isDisabled;
+  if (userData.isDisabled ) user.isDisabled = userData.isDisabled;
 
+  if (userData.isVerified ) user.isVerified = userData.isVerified;
   await user.save();
   return true;
 };

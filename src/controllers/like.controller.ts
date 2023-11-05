@@ -1,6 +1,6 @@
 import  { Request, Response } from "express";
-import ApiResponse from "../utils/ApiResponse";
-import LikeModel from "../models/like";
+import ApiResponse from "../utils/ApiResponse.js";
+import LikeModel from "../models/like.js";
 
 export default class LikeController {
 

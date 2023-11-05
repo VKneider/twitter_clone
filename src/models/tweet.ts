@@ -9,7 +9,7 @@ export interface ITweet extends Document {
   hashtags: string[];
   isDeleted: boolean;
   isEdited: boolean;
-  isReply: string | boolean | null;
+  isReply: string | null;
   createdAt: Date;
   updateData: (tweetData: {
     content?: string;
@@ -18,7 +18,7 @@ export interface ITweet extends Document {
     hashtags?: string[];
     isDeleted?: boolean;
     isEdited?: boolean;
-    isReply?: string | boolean | null;
+    isReply?: string | null;
   }) => Promise<boolean>;
 }
 
@@ -72,7 +72,7 @@ tweetSchema.methods.updateData = async function (
     hashtags?: string[];
     isDeleted?: boolean;
     isEdited?: boolean;
-    isReply?: string | boolean | null;
+    isReply?: string | null;
   }
 ): Promise<boolean> {
   const tweet = this;

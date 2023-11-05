@@ -7,8 +7,9 @@ export default function attachUserId(req: Request, _: any, next: any): void {
 
   if (token) {
     try {
-      const decoded: any = jwt.verify(token, process.env.JWT_SECRET || "secret");
-      req.body.idUserToken = decoded.userId;
+      const decoded: any = jwt.verify(token, process.env.JWT_SECRET as string);
+   
+      req.body.idUserToken = decoded.id;
       next();
     } catch (error) {
       console.error(error);

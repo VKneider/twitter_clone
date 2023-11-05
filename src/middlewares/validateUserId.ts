@@ -13,16 +13,27 @@ export default function validateUserIdToken(req: Request, res: Response, next: N
     const httpMethod = req.method; 
 
     if (httpMethod === "GET" || httpMethod === "DELETE") {
-        const paramUserId = req.params.userId;
+        let userId;
+        console.log(req.params)
+        if(req.params.userId){
+            userId = req.params.userId;
+        }
+
+        if(req.query.userId){
+            userId = req.query.userId as string;
+        }
+
+
         const {idUserToken} = req.body;
 
-        if (!areValuesEqual(paramUserId, idUserToken)) {
+        if (!areValuesEqual(userId as string, idUserToken)) {
             return ApiResponse.unauthorized(res, "Unauthorized access");
         }else{
             next();
         }
 
     } else {
+        
         const {idUserToken, userId} = req.body;
         
         if (!areValuesEqual(userId, idUserToken)) {

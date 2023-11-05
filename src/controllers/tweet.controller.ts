@@ -15,6 +15,8 @@ export default class TweetController {
             idUser: userId
         });
 
+        const savedTweet = await tweet.save();
+
         if (!tweet) {
             return ApiResponse.error(res, "Error creating tweet", 400);
         }

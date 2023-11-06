@@ -38,7 +38,8 @@ export default class TweetController {
 
             const tweets = await TweetModel.find(query)
                 .sort({ createdAt: -1 }) // Ordenar por fecha de creación descendente
-                .limit(10); // Limitar la cantidad de tweets por solicitud
+                .limit(10)
+                .populate("idUser", ["fullName", "username", "email"]); // Limitar la cantidad de tweets por solicitud
 
             if (!tweets || tweets.length === 0) {
                 return ApiResponse.notFound(res, "No tweets found");

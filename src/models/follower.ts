@@ -12,13 +12,11 @@ const followerSchema: Schema<IFollower> = new Schema<IFollower>({
         type: String,
         required: true,
         ref: "User",
-        unique: true, 
     },
     idFollowing: {
         type: String,
         required: true,
         ref: "User",
-        unique: true, 
     },
     createdAt: {
         type: Date,
@@ -28,7 +26,6 @@ const followerSchema: Schema<IFollower> = new Schema<IFollower>({
 });
 
 
-followerSchema.index({ idUser: 1, idFollowing: 1 }, { unique: true });
 
 const FollowerModel = model<IFollower>("Follower", followerSchema);
 

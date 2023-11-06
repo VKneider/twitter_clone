@@ -29,11 +29,11 @@ export default class TweetController {
         const { lastTweetDate } = req.query;
 
         try {
-            let query: any = { idUser: userId };
+            let query: any = { idUser: userId, isReply: null, isDeleted: false };
 
             // Si se proporciona lastTweetDate, añade la condición de fecha en la consulta
             if (lastTweetDate) {
-                query.createdAt = { $gt: new Date(lastTweetDate as string) };
+                query.createdAt = { $lt: new Date(lastTweetDate as string) };
             }
 
             const tweets = await TweetModel.find(query)
@@ -65,7 +65,7 @@ export default class TweetController {
 
             // Si se proporciona lastTweetDate, añade la condición de fecha en la consulta
             if (lastTweetDate) {
-                query.createdAt = { $gt: new Date(lastTweetDate as string) };
+                query.createdAt = { $lt: new Date(lastTweetDate as string) };
             }
 
             const tweets = await TweetModel.find(query)

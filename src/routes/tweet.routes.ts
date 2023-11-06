@@ -10,19 +10,15 @@ import validateUserIdToken from '../middlewares/validateUserId.js';
 let tweetRouter = Router();
 tweetRouter.use(passport.authenticate("jwt", { session: false }));
 
-
-
 tweetRouter.post("/",validationYup(schemas.createTweetSchema),TweetController.createTweet);
-
-tweetRouter.get("/user/:userId", attachUserId ,validateUserIdToken , TweetController.getTweetsFromUser);
-
-tweetRouter.get("/tweet/:tweetId",attachUserId ,validateUserIdToken ,TweetController.getTweetById);
-
-//tweetRouter.put("/",validationYup(schemas.updateTweetSchema),TweetController.updateTweetData);
 
 tweetRouter.delete("/:tweetId",attachUserId ,validateUserIdToken ,TweetController.updateTweetData);
 
-tweetRouter.get("/getAllTweets",attachUserId ,validateUserIdToken ,TweetController.getAllTweets);
+//tweetRouter.put("/",validationYup(schemas.updateTweetSchema),TweetController.updateTweetData);
 
+tweetRouter.get("/tweet/:tweetId",TweetController.getTweetById);
+tweetRouter.get("/allTweets/:userId",TweetController.getAllTweets);
+tweetRouter.get("/user/:userId", TweetController.getTweetsFromUser);
+tweetRouter.get("/feed/:userId" ,TweetController.getFeed);
 
 export default tweetRouter;

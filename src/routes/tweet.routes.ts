@@ -11,19 +11,18 @@ let tweetRouter = Router();
 tweetRouter.use(passport.authenticate("jwt", { session: false }));
 
 
+
 tweetRouter.post("/",validationYup(schemas.createTweetSchema),TweetController.createTweet);
 
-tweetRouter.get("/user/:userId",TweetController.getTweetsFromUser);
+tweetRouter.get("/user/:userId", attachUserId ,validateUserIdToken , TweetController.getTweetsFromUser);
 
-tweetRouter.get("/tweet/:tweetId",TweetController.getTweetById);
+tweetRouter.get("/tweet/:tweetId",attachUserId ,validateUserIdToken ,TweetController.getTweetById);
 
 //tweetRouter.put("/",validationYup(schemas.updateTweetSchema),TweetController.updateTweetData);
 
-tweetRouter.delete("/:tweetId",TweetController.updateTweetData);
+tweetRouter.delete("/:tweetId",attachUserId ,validateUserIdToken ,TweetController.updateTweetData);
 
-tweetRouter.get("/getAllTweets",TweetController.getAllTweets);
+tweetRouter.get("/getAllTweets",attachUserId ,validateUserIdToken ,TweetController.getAllTweets);
 
-tweetRouter.use(attachUserId);
-tweetRouter.use(validateUserIdToken);
 
 export default tweetRouter;

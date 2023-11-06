@@ -9,14 +9,14 @@ export default class followerController{
     static followUser = async (req: Request, res: Response) => {
         const { userId, idFollowing } = req.body;
 
-        const follower = new FollowerModel({
-            idUser: userId,
-            idFollowing
-        });
+        const follower = await FollowerModel.findOne({ idUser:userId, idFollowing })
 
-        if (!follower) {
-            return ApiResponse.error(res, "Error following user", 400);
+        if (follower) {
+            return ApiResponse.error(res, "Error following user, user already followed", 400);
         }
+        
+        const newFollower = new FollowerModel({idUser:userId, idFollowing});
+        await newFollower.save();
 
         return ApiResponse.success(res, "User followed", follower);
     }
@@ -29,6 +29,8 @@ export default class followerController{
         if (!follower) {
             return ApiResponse.error(res, "Error unfollowing user", 400);
         }
+
+
 
         return ApiResponse.success(res, "User unfollowed", follower);
     }

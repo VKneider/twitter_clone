@@ -9,7 +9,7 @@ import userRouter from './routes/user.routes.js';
 import authRouter from './routes/auth.routes.js';
 import likeRouter from './routes/like.routes.js';
 import tweetRouter from './routes/tweet.routes.js';
-
+import followerRouter from './routes/follower.routes.js';
 
 const app = express();
 
@@ -25,7 +25,12 @@ passport.use(passportMiddleware)
 app.use('/auth', authRouter)
 app.use('/user', userRouter)
 app.use('/tweet', tweetRouter)
-app.use('/like', likeRouter)
+app.use(likeRouter)
+app.use(followerRouter)
+
+app.use((req, res) => {
+    console.log(`Request: ${req.method} ${req.path} ${JSON.stringify(req.body)}`);
+});
 
 
 

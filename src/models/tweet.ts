@@ -11,6 +11,7 @@ export interface ITweet extends Document {
   isEdited: boolean;
   isReply: string | null;
   createdAt: Date;
+  likes: number;
   updateData: (tweetData: {
     content?: string;
     attachmentUrls?: string[];

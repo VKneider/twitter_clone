@@ -2,6 +2,8 @@ import TweetModel from "../models/tweet.js";
 import  { Request, Response } from "express";
 import ApiResponse from "../utils/ApiResponse.js";
 import FollowerModel from "../models/follower.js";
+import LikeModel from "../models/like.js";
+import { ITweet } from "../models/tweet.js";
 
 export default class TweetController {
 
@@ -45,7 +47,16 @@ export default class TweetController {
                 return ApiResponse.notFound(res, "No tweets found");
             }
 
-            return ApiResponse.success(res, "Tweets retrieved", tweets);
+            const likeCountsPromises = tweets.map(async (tweet) => {
+                const likeCount = await LikeModel.find({ idTweet: tweet._id }).countDocuments();
+                return { ...tweet.toObject(), likes: likeCount };
+            });
+    
+            // Espera a que todas las consultas asincrónicas se completen
+            let tweets2 = await Promise.all(likeCountsPromises as Promise<ITweet>[]);
+
+
+            return ApiResponse.success(res, "Tweets retrieved", tweets2);
         } catch (error) {
             return ApiResponse.error(res, "Error getting tweets", 500);
         }
@@ -78,7 +89,16 @@ export default class TweetController {
                 return ApiResponse.notFound(res, "No tweets found");
             }
 
-            return ApiResponse.success(res, "Feed retrieved", tweets);
+            const likeCountsPromises = tweets.map(async (tweet) => {
+                const likeCount = await LikeModel.find({ idTweet: tweet._id }).countDocuments();
+                return { ...tweet.toObject(), likes: likeCount };
+            });
+    
+            // Espera a que todas las consultas asincrónicas se completen
+            let tweets2 = await Promise.all(likeCountsPromises as Promise<ITweet>[]);
+
+
+            return ApiResponse.success(res, "Feed retrieved", tweets2);
         } catch (error) {
             return ApiResponse.error(res, "Error getting feed", 500);
         }
@@ -117,16 +137,26 @@ export default class TweetController {
                 query.createdAt = { $lt: new Date(lastTweetDate as string) };
             }
 
-            const tweets = await TweetModel.find(query)
+            let tweets = await TweetModel.find(query)
                 .sort({ createdAt: -1 })
                 .limit(parseInt(limit as string))
                 .populate("idUser", ["fullName", "username", "email"]); // Popula el usuario que hizo el tweet con los campos fullName, username y email
 
-            if (!tweets || tweets.length === 0) {
-                return ApiResponse.notFound(res, "No tweets found");
-            }
+                
+                if (!tweets || tweets.length === 0) {
+                    return ApiResponse.notFound(res, "No tweets found");
+                }
+                
+                const likeCountsPromises = tweets.map(async (tweet) => {
+                    const likeCount = await LikeModel.find({ idTweet: tweet._id }).countDocuments();
+                    return { ...tweet.toObject(), likes: likeCount };
+                });
+        
+                // Espera a que todas las consultas asincrónicas se completen
+                let tweets2 = await Promise.all(likeCountsPromises as Promise<ITweet>[]);
 
-            return ApiResponse.success(res, "Tweets retrieved", tweets);
+
+            return ApiResponse.success(res, "Tweets retrieved", tweets2);
         } catch (error) {
             return ApiResponse.error(res, "Error getting tweets", 500);
         }

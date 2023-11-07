@@ -11,6 +11,8 @@ export interface IUser extends Document {
   isDisabled: boolean;
   createdAt: Date;
   isVerified: boolean;
+  bio: string;
+  profilePicture: string;
   comparePassword: (password: string) => Promise<boolean>;
   updateData: (userData: {
     fullName?: string;
@@ -20,6 +22,8 @@ export interface IUser extends Document {
     newPassword?: string;
     isDisabled?: boolean;
     isVerified?: boolean;
+    bio?: string;
+    profilePicture?: string;
   }) => Promise<boolean>;
   createToken: (user:any) => Promise<string>;
 }
@@ -93,6 +97,8 @@ userSchema.methods.updateData = async function (
     newPassword?: string;
     isDisabled?: boolean;
     isVerified?: boolean;
+    bio?: string;
+    profilePicture?: string;
   }
 ): Promise<boolean> {
   const user = this;
@@ -108,6 +114,8 @@ userSchema.methods.updateData = async function (
   }
   if (userData.username) user.username = userData.username;
   if (userData.isDisabled ) user.isDisabled = userData.isDisabled;
+  if (userData.bio ) user.bio = userData.bio;
+  if (userData.profilePicture ) user.profilePicture = userData.profilePicture;
 
   if (userData.isVerified ) user.isVerified = userData.isVerified;
   await user.save();

@@ -41,7 +41,7 @@ export default class TweetController {
             const tweets = await TweetModel.find(query)
                 .sort({ createdAt: -1 }) // Ordenar por fecha de creación descendente
                 .limit(10)
-                .populate("idUser", ["fullName", "username", "email"]); // Limitar la cantidad de tweets por solicitud
+                .populate("idUser", ["fullName", "username", "email", "profilePicture", "isDisabled"]); // Popula el usuario que hizo el tweet con los campos fullName, username y email
 
             if (!tweets || tweets.length === 0) {
                 return ApiResponse.notFound(res, "No tweets found");
@@ -55,8 +55,12 @@ export default class TweetController {
             // Espera a que todas las consultas asincrónicas se completen
             let tweets2 = await Promise.all(likeCountsPromises as Promise<ITweet>[]);
 
+            const filteredTweets = tweets2.filter(objeto => {
+                let objeto2 = objeto as any;
+                return objeto2.idUser.isDisabled === false;
+            });
 
-            return ApiResponse.success(res, "Tweets retrieved", tweets2);
+            return ApiResponse.success(res, "Tweets retrieved", filteredTweets);
         } catch (error) {
             return ApiResponse.error(res, "Error getting tweets", 500);
         }
@@ -70,9 +74,6 @@ export default class TweetController {
             // Encuentra los usuarios que sigue el usuario actual
             const followingUsers = await FollowerModel.find({ idUser: userId }).distinct("idFollowing");
 
-            // Agrega al usuario actual en la lista para incluir sus propios tweets en el feed
-            followingUsers.push(userId);
-
             let query: any = { idUser: { $in: followingUsers }, isDeleted:false, isReply: null };
 
             // Si se proporciona lastTweetDate, añade la condición de fecha en la consulta
@@ -83,7 +84,7 @@ export default class TweetController {
             const tweets = await TweetModel.find(query)
                 .sort({ createdAt: -1 })
                 .limit(10)
-                .populate("idUser", ["fullName", "username", "email"]); // Popula el usuario que hizo el tweet con los campos fullName, username y email
+                .populate("idUser", ["fullName", "username", "email", "profilePicture", "isDisabled"]); // Popula el usuario que hizo el tweet con los campos fullName, username y email
 
             if (!tweets || tweets.length === 0) {
                 return ApiResponse.notFound(res, "No tweets found");
@@ -97,8 +98,12 @@ export default class TweetController {
             // Espera a que todas las consultas asincrónicas se completen
             let tweets2 = await Promise.all(likeCountsPromises as Promise<ITweet>[]);
 
+            const filteredTweets = tweets2.filter(objeto => {
+                let objeto2 = objeto as any;
+                return objeto2.idUser.isDisabled === false;
+            });
 
-            return ApiResponse.success(res, "Feed retrieved", tweets2);
+            return ApiResponse.success(res, "Feed retrieved", filteredTweets);
         } catch (error) {
             return ApiResponse.error(res, "Error getting feed", 500);
         }
@@ -140,7 +145,7 @@ export default class TweetController {
             let tweets = await TweetModel.find(query)
                 .sort({ createdAt: -1 })
                 .limit(parseInt(limit as string))
-                .populate("idUser", ["fullName", "username", "email"]); // Popula el usuario que hizo el tweet con los campos fullName, username y email
+                .populate("idUser", ["fullName", "username", "email", "profilePicture", "isDisabled"]); // Popula el usuario que hizo el tweet con los campos fullName, username y email
 
                 
                 if (!tweets || tweets.length === 0) {
@@ -155,8 +160,17 @@ export default class TweetController {
                 // Espera a que todas las consultas asincrónicas se completen
                 let tweets2 = await Promise.all(likeCountsPromises as Promise<ITweet>[]);
 
+                //Filter tweets2 variable and remove tweets that .idUser.isDisabled = true
+        
+                const filteredTweets = tweets2.filter(objeto => {
+                    let objeto2 = objeto as any;
+                    return objeto2.idUser.isDisabled === false;
+                });
 
-            return ApiResponse.success(res, "Tweets retrieved", tweets2);
+
+
+
+            return ApiResponse.success(res, "Tweets retrieved", filteredTweets);
         } catch (error) {
             return ApiResponse.error(res, "Error getting tweets", 500);
         }

@@ -18,6 +18,10 @@ export default class authController {
             return ApiResponse.error(res, "User does not exist");
         }
 
+        if(user.isDisabled){
+            return ApiResponse.error(res, "User is disabled");
+        }
+        
         // Verifica la contraseña
         const validPassword = await user.comparePassword(password);
 
@@ -28,7 +32,13 @@ export default class authController {
         // Genera el token de autenticación
         const token = await user.createToken(user);
 
-        return ApiResponse.success(res, "User logged in", { token });
+        let flag = false;
+        if(user.firstLogin){
+            flag = true;
+            user.firstLogin = false;
+            await user.save();
+        }
+        return ApiResponse.success(res, "User logged in", { token, firstLogin: flag });
     };
 
     static register = async (req: Request, res: Response) => {

@@ -28,10 +28,4 @@ app.use('/tweet', tweetRouter)
 app.use(likeRouter)
 app.use(followerRouter)
 
-app.use((req, res) => {
-    console.log(`Request: ${req.method} ${req.path} ${JSON.stringify(req.body)}`);
-});
-
-
-
 export default app;

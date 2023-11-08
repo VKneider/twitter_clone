@@ -13,6 +13,7 @@ export interface IUser extends Document {
   isVerified: boolean;
   bio: string;
   profilePicture: string;
+  firstLogin: boolean;
   comparePassword: (password: string) => Promise<boolean>;
   updateData: (userData: {
     fullName?: string;
@@ -72,6 +73,10 @@ const userSchema = new Schema<IUser>({
     type: String,
     default: "",
   },
+  firstLogin: {
+    type: Boolean,
+    default: true,
+  }
 });
 
 

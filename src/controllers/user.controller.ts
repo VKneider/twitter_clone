@@ -98,7 +98,22 @@ export default class UserController {
             return ApiResponse.notFound(res, "Users not found");
         }
 
-        return ApiResponse.success(res, "Users found", users);
+        //get the ammount of followers for each user
+        const followersPromises = users.map(async (user) => {
+            const followers = await UserCollection.find({idFollowing: user._id}).countDocuments();
+            return { ...user.toObject(), followers: followers };
+        });
+
+        // Espera a que todas las consultas asincrónicas se completen
+        let users2 = await Promise.all(followersPromises);
+
+
+
+
+
+
+
+        return ApiResponse.success(res, "Users found", users2);
     }
     
 

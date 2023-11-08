@@ -73,7 +73,7 @@ export default class TweetController {
             // Agrega al usuario actual en la lista para incluir sus propios tweets en el feed
             followingUsers.push(userId);
 
-            let query: any = { idUser: { $in: followingUsers } };
+            let query: any = { idUser: { $in: followingUsers }, isDeleted:false, isReply: null };
 
             // Si se proporciona lastTweetDate, añade la condición de fecha en la consulta
             if (lastTweetDate) {
@@ -130,7 +130,7 @@ export default class TweetController {
         const { limit = 10 } = req.query;
 
         try {
-            let query: any = {};
+            let query: any = {  isReply: null, isDeleted: false };
 
             // Si se proporciona lastTweetDate, añade la condición de fecha en la consulta
             if (lastTweetDate) {

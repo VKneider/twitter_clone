@@ -64,6 +64,14 @@ const userSchema = new Schema<IUser>({
     required: true,
     default: false,
   },
+  bio: {
+    type: String,
+    default: "",
+  },
+  profilePicture: {
+    type: String,
+    default: "",
+  },
 });
 
 

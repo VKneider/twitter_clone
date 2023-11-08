@@ -42,4 +42,25 @@ export default class UserController {
 
         return ApiResponse.success(res, "User updated");
     }
+
+    static searchUser = async (req: Request, res: Response) => {
+        const { query } = req.body;
+        const users = await UserCollection.find({
+            $or: [
+                { username: { $regex: query, $options: "i" } },
+                { email: { $regex: query, $options: "i" } }
+            ]
+        });
+
+        if (!users) {
+            return ApiResponse.notFound(res, "Users not found");
+        }
+
+        return ApiResponse.success(res, "Users found", users);
+    }
+
+
+    
+
 }
+

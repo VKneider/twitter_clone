@@ -9,23 +9,28 @@ import attachUserId from '../middlewares/attachUserId.js';
 import validateUserIdToken from '../middlewares/validateUserId.js';
 
 userRouter.use(passport.authenticate("jwt", { session: false }));
-userRouter.use(attachUserId);
-userRouter.use(validateUserIdToken);
+
 
 
 userRouter.get(
     "/:userId",
+    attachUserId,
+    validateUserIdToken,
     UserController.getUserData
 );
 
 userRouter.put(
     "/",
+    attachUserId,
+    validateUserIdToken,
     validationYup(schemas.updateUserDataSchema),
     UserController.updateUserData
 );
 
 userRouter.delete(
     "/:userId",
+    attachUserId,
+    validateUserIdToken,
     UserController.deleteUser
 );
 
@@ -36,6 +41,8 @@ userRouter.get(
 
 userRouter.get(
     "/profile/:userId",
+    attachUserId,
+    validateUserIdToken,
     UserController.getProfileData
 );
 

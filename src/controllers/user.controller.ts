@@ -44,7 +44,7 @@ export default class UserController {
     }
 
     static searchUser = async (req: Request, res: Response) => {
-        const { query } = req.body;
+        const { query } = req.params;
         const users = await UserCollection.find({
             $or: [
                 { username: { $regex: query, $options: "i" } },

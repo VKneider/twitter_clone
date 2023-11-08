@@ -59,7 +59,33 @@ export default class UserController {
         return ApiResponse.success(res, "Users found", users);
     }
 
+    static getProfileData = async (req: Request, res: Response) => {
+        const { userId: id } = req.params;
+        const user = await UserCollection.findById(id);
 
+
+        if (!user) {
+            return ApiResponse.notFound(res, "User not found");
+        }
+
+        //get the ammount of followers
+        const followers = await UserCollection.find({idFollowing: id}).countDocuments();
+        const following = await UserCollection.find({idUser: id}).countDocuments();
+        const tweets = await UserCollection.find({idUser: id}).countDocuments();
+
+
+        return ApiResponse.success(res, "User found", {
+            username: user.username,
+            email: user.email,
+            fullName: user.fullName,
+            bio: user.bio,
+            profilePicture: user.profilePicture,
+            isVerified: user.isVerified,
+            followers: followers,
+            following: following,
+            tweets: tweets
+        });
+    }
     
 
 }

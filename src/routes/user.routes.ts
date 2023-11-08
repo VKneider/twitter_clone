@@ -29,6 +29,16 @@ userRouter.delete(
     UserController.deleteUser
 );
 
+userRouter.get(
+    "/search/:query",
+    UserController.searchUser
+);
+
+userRouter.get(
+    "/profile/:userId",
+    UserController.getProfileData
+);
+
 
 
 

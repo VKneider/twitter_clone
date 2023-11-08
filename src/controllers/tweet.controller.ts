@@ -176,6 +176,58 @@ export default class TweetController {
         }
     }
 
+    static getTweetReplies = async (req: Request, res: Response) => {
+        const { tweetId } = req.params;
+
+        try {
+            let query: any = { isReply: tweetId, isDeleted: false };
+
+
+            const tweets = await TweetModel.find(query)
+                .sort({ createdAt: -1 })
+                .limit(10)
+                .populate("idUser", ["fullName", "username", "email", "profilePicture", "isDisabled"]); // Popula el usuario que hizo el tweet con los campos fullName, username y email
+
+            if (!tweets || tweets.length === 0) {
+                return ApiResponse.notFound(res, "No tweets found");
+            }
+
+            const likeCountsPromises = tweets.map(async (tweet) => {
+                const likeCount = await LikeModel.find({ idTweet: tweet._id }).countDocuments();
+                return { ...tweet.toObject(), likes: likeCount };
+            });
+    
+            // Espera a que todas las consultas asincrónicas se completen
+            let tweets2 = await Promise.all(likeCountsPromises as Promise<ITweet>[]);
+
+            const filteredTweets = tweets2.filter(objeto => {
+                let objeto2 = objeto as any;
+                return objeto2.idUser.isDisabled === false;
+            });
+
+            return ApiResponse.success(res, "Tweets retrieved", filteredTweets);
+        } catch (error) {
+            return ApiResponse.error(res, "Error getting tweets", 500);
+        }
+    }
+
+    static replyTweet = async (req: Request, res: Response) => {
+        const { userId } = req.body;
+        
+        const tweet = new TweetModel({
+            ...req.body,
+            idUser: userId
+        });
+
+        const savedTweet = await tweet.save();
+
+        if (!tweet) {
+            return ApiResponse.error(res, "Error creating tweet", 400);
+        }
+
+        return ApiResponse.success(res, "Tweet created", tweet);
+    }
+
 
 }
 

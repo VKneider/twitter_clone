@@ -91,6 +91,15 @@ export default class UserController {
             tweets: tweets
         });
     }
+
+    static getAllUsers = async (req: Request, res: Response) => {
+        const users = await UserCollection.find({isDisabled: false});
+        if (!users) {
+            return ApiResponse.notFound(res, "Users not found");
+        }
+
+        return ApiResponse.success(res, "Users found", users);
+    }
     
 
 }

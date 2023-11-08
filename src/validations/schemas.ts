@@ -39,6 +39,17 @@ const schemas = {
         
     }),
 
+    replySchema : sch({
+        userId: yup.string().required("User id is required"),
+        content: yup.string().required("Content is required"),
+        attachmentUrls: yup.array().of(yup.string()),
+        mentions: yup.array().of(yup.string()),
+        hashtags: yup.array().of(yup.string()),
+        isReply: yup.string().required("Reply id is required"),
+        
+    }),
+
+
     likeSchema : sch({
         userId: yup.string().required("User id is required"),
         tweetId: yup.string().required("Post id is required"),

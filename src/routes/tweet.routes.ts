@@ -14,11 +14,13 @@ tweetRouter.post("/",validationYup(schemas.createTweetSchema),TweetController.cr
 
 tweetRouter.delete("/:tweetId",attachUserId ,validateUserIdToken ,TweetController.updateTweetData);
 
+tweetRouter.post("/reply",validationYup(schemas.replySchema),TweetController.replyTweet);
 //tweetRouter.put("/",validationYup(schemas.updateTweetSchema),TweetController.updateTweetData);
 
-tweetRouter.get("/tweet/:tweetId",TweetController.getTweetById);
+tweetRouter.get("/:tweetId",TweetController.getTweetById);
 tweetRouter.get("/allTweets/:userId",TweetController.getAllTweets);
 tweetRouter.get("/user/:userId", TweetController.getTweetsFromUser);
 tweetRouter.get("/feed/:userId" ,TweetController.getFeed);
+tweetRouter.get("/replies/:tweetId" ,TweetController.getTweetReplies);
 
 export default tweetRouter;

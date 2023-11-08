@@ -46,7 +46,7 @@ userRouter.get(
     UserController.getProfileData
 );
 
-
+userRouter.get("/allUsers", UserController.getAllUsers);
 
 
 export default userRouter;

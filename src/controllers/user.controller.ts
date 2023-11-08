@@ -48,7 +48,7 @@ export default class UserController {
         const users = await UserCollection.find({
             $or: [
                 { username: { $regex: query, $options: "i" } },
-                { email: { $regex: query, $options: "i" } }
+                { fullName: { $regex: query, $options: "i" } }
             ],
             isDisabled: false
         });
@@ -72,7 +72,7 @@ export default class UserController {
         if(user.isDisabled){
             return ApiResponse.error(res, "User is disabled");
         }
-        
+
         //get the ammount of followers
         const followers = await UserCollection.find({idFollowing: id}).countDocuments();
         const following = await UserCollection.find({idUser: id}).countDocuments();

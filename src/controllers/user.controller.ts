@@ -1,3 +1,5 @@
+import FollowerModel from "../models/follower.js";
+import TweetModel from "../models/tweet.js";
 import UserCollection, { IUser } from "../models/user.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import { Request, Response } from "express";
@@ -59,7 +61,7 @@ export default class UserController {
 
         //get the ammount of followers for each user
         const followersPromises = users.map(async (user) => {
-            const followers = await UserCollection.find({idFollowing: user._id}).countDocuments();
+            const followers = await FollowerModel.find({idFollowing: user._id}).countDocuments();
             return { ...user.toObject(), followers: followers };
         });
 
@@ -85,9 +87,9 @@ export default class UserController {
         }
 
         //get the ammount of followers
-        const followers = await UserCollection.find({idFollowing: id}).countDocuments();
-        const following = await UserCollection.find({idUser: id}).countDocuments();
-        const tweets = await UserCollection.find({idUser: id}).countDocuments();
+        const followers = await FollowerModel.find({idFollowing: id}).countDocuments();
+        const following = await FollowerModel.find({idUser: id}).countDocuments();
+        const tweets = await TweetModel.find({idUser: id}).countDocuments();
 
 
         return ApiResponse.success(res, "User found", {
@@ -111,7 +113,7 @@ export default class UserController {
 
         //get the ammount of followers for each user
         const followersPromises = users.map(async (user) => {
-            const followers = await UserCollection.find({idFollowing: user._id}).countDocuments();
+            const followers = await FollowerModel.find({idFollowing: user._id}).countDocuments();
             return { ...user.toObject(), followers: followers };
         });
 

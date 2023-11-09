@@ -46,7 +46,7 @@ export default class UserController {
     }
 
     static searchUser = async (req: Request, res: Response) => {
-        const { query } = req.params;
+        const { userId: id, query } = req.params;
         const users = await UserCollection.find({
             $or: [
                 { username: { $regex: query, $options: "i" } },
@@ -68,6 +68,14 @@ export default class UserController {
         // Espera a que todas las consultas asincrónicas se completen
         let users2 = await Promise.all(followersPromises);
 
+
+        const followingPromises = users2.map(async (user) => {
+            const following = await FollowerModel.find({idUser: id, idFollowing: user._id}).countDocuments();
+            return { ...user, isFollowing: following > 0 };
+        });
+
+        // Espera a que todas las consultas asincrónicas se completen
+        users2 = await Promise.all(followingPromises);
 
 
         return ApiResponse.success(res, "Users found", users2);
@@ -106,6 +114,9 @@ export default class UserController {
     }
 
     static getAllUsers = async (req: Request, res: Response) => {
+
+        const { userId: id } = req.body;
+
         const users = await UserCollection.find({isDisabled: false});
         if (!users) {
             return ApiResponse.notFound(res, "Users not found");
@@ -121,10 +132,14 @@ export default class UserController {
         let users2 = await Promise.all(followersPromises);
 
 
+        //Necesito agregar el campo a cda usuario que verifique si el usuario que hace la peticion sigue a cada uno de los usuarios
+        const followingPromises = users2.map(async (user) => {
+            const following = await FollowerModel.find({idUser: id, idFollowing: user._id}).countDocuments();
+            return { ...user, isFollowing: following > 0 };
+        });
 
-
-
-
+        // Espera a que todas las consultas asincrónicas se completen
+        users2 = await Promise.all(followingPromises);
 
         return ApiResponse.success(res, "Users found", users2);
     }

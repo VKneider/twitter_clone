@@ -35,7 +35,7 @@ userRouter.delete(
 );
 
 userRouter.get(
-    "/search/:query",
+    "/search/:userId/:query",
     UserController.searchUser
 );
 

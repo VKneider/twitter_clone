@@ -17,18 +17,7 @@ export default class UserController {
         return ApiResponse.success(res, "User deleted");
     }
 
-    static getUserData = async (req: Request, res: Response) => {
-        const { userId: id } = req.body;
-        const user = await UserCollection.findById(id);
-        if (user) {
-            return ApiResponse.success(res, "User found", {
-                username: user.username,
-                email: user.email
-            });
-        } else {
-            return ApiResponse.notFound(res, "User not found");
-        }
-    }
+
 
     static updateUserData = async (req: Request, res: Response) => {
         const { userId: id } = req.body;
@@ -85,6 +74,7 @@ export default class UserController {
         const { userId: id } = req.params;
         const user = await UserCollection.findById(id);
 
+        //tell typescript that req.user is not undefined
 
         if (!user) {
             return ApiResponse.notFound(res, "User not found");
@@ -99,6 +89,10 @@ export default class UserController {
         const following = await FollowerModel.find({idUser: id}).countDocuments();
         const tweets = await TweetModel.find({idUser: id}).countDocuments();
 
+        const myId = (req.user as { _id: string })._id;
+
+        const isFollowing = await FollowerModel.find({idUser: myId, idFollowing: id}).countDocuments() > 0; 
+
 
         return ApiResponse.success(res, "User found", {
             username: user.username,
@@ -109,13 +103,14 @@ export default class UserController {
             isVerified: user.isVerified,
             followers: followers,
             following: following,
-            tweets: tweets
+            tweets: tweets,
+            isFollowing: isFollowing
         });
     }
 
     static getAllUsers = async (req: Request, res: Response) => {
 
-        const { userId: id } = req.body;
+        const { userId: id } = req.params;
 
         const users = await UserCollection.find({isDisabled: false});
         if (!users) {

@@ -11,14 +11,6 @@ import validateUserIdToken from '../middlewares/validateUserId.js';
 userRouter.use(passport.authenticate("jwt", { session: false }));
 
 
-
-userRouter.get(
-    "/:userId",
-    attachUserId,
-    validateUserIdToken,
-    UserController.getUserData
-);
-
 userRouter.put(
     "/",
     attachUserId,
@@ -41,12 +33,11 @@ userRouter.get(
 
 userRouter.get(
     "/profile/:userId",
-    attachUserId,
-    validateUserIdToken,
+   
     UserController.getProfileData
 );
 
-userRouter.get("/data/allUsers", UserController.getAllUsers);
+userRouter.get("/data/allUsers/:userId", UserController.getAllUsers);
 
 
 export default userRouter;

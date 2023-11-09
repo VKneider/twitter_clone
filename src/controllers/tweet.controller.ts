@@ -60,7 +60,20 @@ export default class TweetController {
                 return objeto2.idUser.isDisabled === false;
             });
 
-            return ApiResponse.success(res, "Tweets retrieved", filteredTweets);
+            //Search in database and add the field isLiked to each tweet
+            const userIdRequest = (req.user as { _id: string })._id;
+
+            const isLikedPromises = filteredTweets.map(async (tweet) => {
+                const isLiked = await LikeModel.find({ idTweet: tweet._id, idUser: userIdRequest }).countDocuments() > 0;
+                return { ...tweet, isLiked: isLiked };
+            });
+
+            // Espera a que todas las consultas asincrónicas se completen
+            let filteredTweetsWithLikes = await Promise.all(isLikedPromises);
+
+            return ApiResponse.success(res, "Tweets retrieved", filteredTweetsWithLikes);
+
+            
         } catch (error) {
             return ApiResponse.error(res, "Error getting tweets", 500);
         }
@@ -103,7 +116,19 @@ export default class TweetController {
                 return objeto2.idUser.isDisabled === false;
             });
 
-            return ApiResponse.success(res, "Feed retrieved", filteredTweets);
+            //Search in database and add the field isLiked to each tweet
+            const userIdRequest = (req.user as { _id: string })._id;
+
+            const isLikedPromises = filteredTweets.map(async (tweet) => {
+                const isLiked = await LikeModel.find({ idTweet: tweet._id, idUser: userIdRequest }).countDocuments() > 0;
+                return { ...tweet, isLiked: isLiked };
+            });
+
+            // Espera a que todas las consultas asincrónicas se completen
+            let filteredTweetsWithLikes = await Promise.all(isLikedPromises);
+
+            return ApiResponse.success(res, "Tweets retrieved", filteredTweetsWithLikes);
+
         } catch (error) {
             return ApiResponse.error(res, "Error getting feed", 500);
         }
@@ -167,10 +192,19 @@ export default class TweetController {
                     return objeto2.idUser.isDisabled === false;
                 });
 
+                //Search in database and add the field isLiked to each tweet
+                const userId = (req.user as { _id: string })._id;
 
+                const isLikedPromises = filteredTweets.map(async (tweet) => {
+                    const isLiked = await LikeModel.find({ idTweet: tweet._id, idUser: userId }).countDocuments() > 0;
+                    return { ...tweet, isLiked: isLiked };
+                });
 
+                // Espera a que todas las consultas asincrónicas se completen
+                let filteredTweetsWithLikes = await Promise.all(isLikedPromises);
 
-            return ApiResponse.success(res, "Tweets retrieved", filteredTweets);
+            return ApiResponse.success(res, "Tweets retrieved", filteredTweetsWithLikes);
+            
         } catch (error) {
             return ApiResponse.error(res, "Error getting tweets", 500);
         }
@@ -205,7 +239,19 @@ export default class TweetController {
                 return objeto2.idUser.isDisabled === false;
             });
 
-            return ApiResponse.success(res, "Tweets retrieved", filteredTweets);
+            //Search in database and add the field isLiked to each tweet
+            const userId = (req.user as { _id: string })._id;
+
+            const isLikedPromises = filteredTweets.map(async (tweet) => {
+                const isLiked = await LikeModel.find({ idTweet: tweet._id, idUser: userId }).countDocuments() > 0;
+                return { ...tweet, isLiked: isLiked };
+            });
+
+            // Espera a que todas las consultas asincrónicas se completen
+            let filteredTweetsWithLikes = await Promise.all(isLikedPromises);
+
+            return ApiResponse.success(res, "Tweets retrieved", filteredTweetsWithLikes);
+
         } catch (error) {
             return ApiResponse.error(res, "Error getting tweets", 500);
         }

@@ -140,7 +140,7 @@ export default class TweetController {
         const { tweetId } = req.params;
 
         try {
-            const tweet = await TweetModel.findById(tweetId);
+            const tweet = await TweetModel.findById(tweetId).populate("idUser", ["fullName", "username", "email", "profilePicture", "isDisabled"]); 
             if (!tweet) {
                 return ApiResponse.notFound(res, "Tweet not found");
             }
@@ -156,6 +156,7 @@ export default class TweetController {
             const isLiked = await LikeModel.find({ idTweet: tweet._id, idUser: userId }).countDocuments() > 0;
 
             const tweet3 = { ...tweet2, isLiked: isLiked };
+
 
 
 

@@ -41,7 +41,7 @@ export default class TweetController {
             const tweets = await TweetModel.find(query)
                 .sort({ createdAt: -1 }) // Ordenar por fecha de creación descendente
                 .limit(10)
-                .populate("idUser", ["fullName", "username", "email", "profilePicture", "isDisabled"]); // Popula el usuario que hizo el tweet con los campos fullName, username y email
+                .populate("idUser", ["fullName", "username", "isVerified", "profilePicture", "isDisabled"]); // Popula el usuario que hizo el tweet con los campos fullName, username y email
 
             if (!tweets || tweets.length === 0) {
                 return ApiResponse.notFound(res, "No tweets found");
@@ -97,7 +97,7 @@ export default class TweetController {
             const tweets = await TweetModel.find(query)
                 .sort({ createdAt: -1 })
                 .limit(10)
-                .populate("idUser", ["fullName", "username", "email", "profilePicture", "isDisabled"]); // Popula el usuario que hizo el tweet con los campos fullName, username y email
+                .populate("idUser", ["fullName", "username", "isVerified", "profilePicture", "isDisabled"]); // Popula el usuario que hizo el tweet con los campos fullName, username y email
 
             if (!tweets || tweets.length === 0) {
                 return ApiResponse.notFound(res, "No tweets found");
@@ -140,7 +140,7 @@ export default class TweetController {
         const { tweetId } = req.params;
 
         try {
-            const tweet = await TweetModel.findById(tweetId).populate("idUser", ["fullName", "username", "email", "profilePicture", "isDisabled"]); 
+            const tweet = await TweetModel.findById(tweetId).populate("idUser", ["fullName", "username", "isVerified", "profilePicture", "isDisabled"]); 
             if (!tweet) {
                 return ApiResponse.notFound(res, "Tweet not found");
             }
@@ -176,7 +176,7 @@ export default class TweetController {
         const { limit = 10 } = req.query;
 
         try {
-            let query: any = {  isReply: null, isDeleted: false };
+            let query: any = {  isDeleted: false };
 
             // Si se proporciona lastTweetDate, añade la condición de fecha en la consulta
             if (lastTweetDate) {
@@ -186,7 +186,7 @@ export default class TweetController {
             let tweets = await TweetModel.find(query)
                 .sort({ createdAt: -1 })
                 .limit(parseInt(limit as string))
-                .populate("idUser", ["fullName", "username", "email", "profilePicture", "isDisabled"]); // Popula el usuario que hizo el tweet con los campos fullName, username y email
+                .populate("idUser", ["fullName", "username", "isVerified", "profilePicture", "isDisabled"]); // Popula el usuario que hizo el tweet con los campos fullName, username y email
 
                 
                 if (!tweets || tweets.length === 0) {
@@ -234,9 +234,9 @@ export default class TweetController {
 
 
             const tweets = await TweetModel.find(query)
-                .sort({ createdAt: -1 })
+                .sort({ createdAt: 'asc' })
                 .limit(10)
-                .populate("idUser", ["fullName", "username", "email", "profilePicture", "isDisabled"]); // Popula el usuario que hizo el tweet con los campos fullName, username y email
+                .populate("idUser", ["fullName", "username", "isVerified", "profilePicture", "isDisabled"]); // Popula el usuario que hizo el tweet con los campos fullName, username y email
 
             if (!tweets || tweets.length === 0) {
                 return ApiResponse.notFound(res, "No tweets found");

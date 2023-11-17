@@ -12,7 +12,7 @@ tweetRouter.use(passport.authenticate("jwt", { session: false }));
 
 tweetRouter.post("/",validationYup(schemas.createTweetSchema),TweetController.createTweet);
 
-tweetRouter.delete("/:tweetId",attachUserId ,validateUserIdToken ,TweetController.deleteTweet);
+tweetRouter.delete("/:tweetId/:userId",attachUserId ,validateUserIdToken ,TweetController.deleteTweet);
 
 tweetRouter.post("/reply",validationYup(schemas.replySchema),TweetController.replyTweet);
 //tweetRouter.put("/",validationYup(schemas.updateTweetSchema),TweetController.updateTweetData);

@@ -166,9 +166,24 @@ export default class TweetController {
         }
     }
 
-    static updateTweetData = async (req: Request, res: Response) => {
-        
-       
+    static deleteTweet = async (req: Request, res: Response) => {
+       const { tweetId } = req.params;
+
+       const tweet = await TweetModel.findById(tweetId);
+
+         if (!tweet) {
+              return ApiResponse.notFound(res, "Tweet not found");
+         }
+
+            tweet.isDeleted = true;
+
+            const savedTweet = await tweet.save();
+
+            if (!savedTweet) {
+                return ApiResponse.error(res, "Error deleting tweet", 500);
+            }
+
+            return ApiResponse.success(res, "Tweet deleted", tweet);
     }
 
     static getAllTweets = async (req: Request, res: Response) => {

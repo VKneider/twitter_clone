@@ -176,7 +176,7 @@ export default class TweetController {
         const { limit = 10 } = req.query;
 
         try {
-            let query: any = {  isDeleted: false };
+            let query: any = {  isReply:null, isDeleted: false };
 
             // Si se proporciona lastTweetDate, añade la condición de fecha en la consulta
             if (lastTweetDate) {

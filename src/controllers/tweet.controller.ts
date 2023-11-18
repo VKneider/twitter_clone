@@ -40,7 +40,7 @@ export default class TweetController {
 
             const tweets = await TweetModel.find(query)
                 .sort({ createdAt: -1 }) // Ordenar por fecha de creación descendente
-                .limit(10)
+               // .limit(10)
                 .populate("idUser", ["fullName", "username", "isVerified", "profilePicture", "isDisabled"]); // Popula el usuario que hizo el tweet con los campos fullName, username y email
 
             if (!tweets || tweets.length === 0) {
@@ -96,7 +96,7 @@ export default class TweetController {
 
             const tweets = await TweetModel.find(query)
                 .sort({ createdAt: -1 })
-                .limit(10)
+            //    .limit(10)
                 .populate("idUser", ["fullName", "username", "isVerified", "profilePicture", "isDisabled"]); // Popula el usuario que hizo el tweet con los campos fullName, username y email
 
             if (!tweets || tweets.length === 0) {
@@ -200,7 +200,7 @@ export default class TweetController {
 
             let tweets = await TweetModel.find(query)
                 .sort({ createdAt: -1 })
-                .limit(parseInt(limit as string))
+             //   .limit(parseInt(limit as string))
                 .populate("idUser", ["fullName", "username", "isVerified", "profilePicture", "isDisabled"]); // Popula el usuario que hizo el tweet con los campos fullName, username y email
 
                 
